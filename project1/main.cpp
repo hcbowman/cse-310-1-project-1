@@ -5,6 +5,21 @@
 
 using namespace std;
 
+/*
+
+typedef struct {
+
+  int key;
+  void value;
+
+} ELEMENT;
+
+
+//Don't use vectors!!
+// some guy said it was taking forever becuase he is using templets? generics in java?
+
+
+*/
 
 
 int main {
