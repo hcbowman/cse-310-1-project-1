@@ -8,7 +8,7 @@ typedef struct {
 
 } ELEMENT;
 
-class Heap {
+class HEAP {
 
 
 public:
@@ -17,6 +17,8 @@ public:
   int size;
   ELEMENT *A;
 
+  int right(int i);
+  int left(int i);
   void heapify();
 
 

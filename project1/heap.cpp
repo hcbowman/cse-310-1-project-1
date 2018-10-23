@@ -3,7 +3,7 @@
 
 using namespace std;
 
-void Heap::heapify() {
+void HEAP::heapify() {
 
   //TODO
   printf("cap[%d]", capacity++);
