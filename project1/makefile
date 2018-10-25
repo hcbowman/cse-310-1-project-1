@@ -2,7 +2,7 @@ CC=g++
 CPPFLAGS=--std=c++11 -Wall -pedantic
 
 all: main.cpp heap.o util.o
-	$(CC) $(CPPFLAGS) main.cpp heap.o util.o -o a
+	$(CC) $(CPPFLAGS) main.cpp heap.o util.o -o proj1
 
 heap.o: heap.cpp
 	$(CC) $(CPPFLAGS) -c heap.cpp

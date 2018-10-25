@@ -8,20 +8,16 @@ typedef struct {
 
 } ELEMENT;
 
-class HEAP {
-
-
-public:
+typedef struct {
 
   int capacity;
   int size;
   ELEMENT *A;
 
-  int right(int i);
-  int left(int i);
-  void heapify();
 
+} HEAP;
 
-};
+int parent(int i);
+void heapify(HEAP heap, int i);
 
 #endif

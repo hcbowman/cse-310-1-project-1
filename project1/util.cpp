@@ -1,4 +1,6 @@
+#include <iostream>
 #include "util.h"
+#include <limits.h>
 
 /*
 void test(HEAP i) {
@@ -10,21 +12,38 @@ void test(HEAP i) {
 //=============================================================================
 
 
-int nextCommand(int *i, int *v, int *f)
+int nextCommand(int *i, int *v, int *f, int *n, int *k)
 {
   char c;
   while(1){
     scanf("%c", &c);
+    if(c >= 97) {
+      c = c - 32;
+    }
+
     if (c == ' ' || c == '\t' || c == '\n'){
       continue;
     }
-    if (c == 'S' || c == 'R' || c == 'W'){
+    if (c == 'S' || c == 'W'){
       break;
     }
-    if (c == 'K' || c == 'k'){
-      scanf("%d", i); scanf("%d", v); scanf("%d", v);
+    if (c == 'K'){
+      scanf("%d", i); scanf("%d", v); scanf("%d", f);
       break;
     }
+
+    if (c == 'D' || c== 'R') {
+      scanf("%d", f);
+      break;
+    }
+    if (c == 'C') {
+      scanf("%d", n);
+      break;
+    }
+    if (c == 'I') {
+      scanf("%d", k); scanf("%d", f);
+      break;
+      }
 
     printf("Invalid Command\n");
   }
@@ -35,12 +54,11 @@ HEAP initialze(int n) {
     /*which returns an object of type HEAP with capacity n and size 0.
     This function requires you to perform dynamic memory allocation.*/
   HEAP heap;
-
   heap.A = new ELEMENT[n + 1];
   heap.capacity = n;
   heap.size = 0;
 
-  for (int i = 0; i <= heap.capacity; i++) {
+  for (int i = 0; i < heap.capacity; i++) {
     heap.A[i].key = 0;
   }
 
@@ -55,8 +73,8 @@ void printHeap(HEAP heap) {
   printf("capacity %d\n" , heap.capacity);
   printf("size %d\n" , heap.size);
 
-  for (int i = 1; i <= heap.capacity; i++) {
-    printf("key = %d\n", heap.A[i].key);
+  for (int i = 0; i < heap.size; i++) {
+    printf("%d\n", heap.A[i].key);
   }
 
 }
@@ -71,13 +89,21 @@ void BuildHeap(HEAP heap, ELEMENT* A, int n, int flag){
    the the array heap->H after each outer call to heapify. If ﬂag=0, this
    function does not do any printing.*/
 
-  if (n <= heap.capacity) {
-    heap.A = A;
-  } else {
+  if (n > heap.capacity) {
+
     heap.A = (ELEMENT*) realloc(heap.A, n*sizeof(ELEMENT));
     heap.capacity = n;
-    heap.A = A;
+
   }
+
+  for (int i = 0; i < n; i++) {
+
+    heap.A[i+1] = A[i];
+
+  }
+  heapify(heap, 1);
+
+  heap.size = n;
 
   switch (flag) {
     case 0:
@@ -89,11 +115,46 @@ void BuildHeap(HEAP heap, ELEMENT* A, int n, int flag){
     break;
 
     case 2:
-    //TODO
+    
     break;
 
 
   }
+
+ }
+
+ void IncreaseKey(HEAP heap, int index, int value, int flag) {
+    /*which increases the key ﬁeld of the heap element pointed to by index to
+    value, which should not be smaller than the current value. Note that you
+    have to make necessary adjustment to make sure that heap order is maintained.
+    When ﬂag=1, the function prints out the heap content before the increase
+    key operation, and the heap content after the increase key operation.
+    When ﬂag=0, the function does not do any additional printing.*/
+
+     //TODO check index to make sure that it is <= size has to be >= 1
+
+     if (flag == 1) {
+       printHeap(heap);
+     }
+
+     if (value < heap.A[index].key) {
+       printf("key already smaller\n");
+       return;
+     } else {
+       heap.A[index].key = value;
+
+       while (index > 1 && heap.A[parent(index)].key < heap.A[index].key) {
+         int swap = heap.A[index].key;
+         heap.A[index].key = heap.A[parent(index)].key;
+         heap.A[parent(index)].key = swap;
+
+         index = parent(index);
+       }
+     }
+
+     if (flag == 1) {
+       printHeap(heap);
+     }
 
  }
 
@@ -104,14 +165,21 @@ void Insert(HEAP heap, int k, int flag) {
   do any additional printing.*/
 
 
-  //TODO: put catch if size is >= capacity, if size is >= capacity,
+  if (heap.size >= heap.capacity) {
+    printf("ERROR: heap full\n");
+    return;
+  }
 
   if (flag == 1) {
     printHeap(heap);
   }
-  heap.A[heap.size + 1].key = k;
+
   heap.size +=1;
-  //heapify();
+  int i = heap.size;
+
+  heap.A[i].key = INT_MIN;
+  IncreaseKey(heap, heap.size, k, 0);
+
   if (flag == 1) {
     printHeap(heap);
   }
@@ -125,43 +193,29 @@ ELEMENT DeleteMax(HEAP heap, int flag) {
   do any additional printing.*/
 
   ELEMENT e;
-  e.key = -1; //TODO ? does heap account for negatives??
+  e.key = INT_MIN;
 
   //TODO: put catch if size is <= 0
 
   if (flag == 1) {
     printHeap(heap);
   }
+
+  if (heap.size < 1) {
+    printf("ERROR: heap empty\n");
+    return e;
+  }
+
   e.key = heap.A[1].key;
-  heap.A[1].key = 0;
-  //heapify();
+  heap.A[1].key = heap.A[heap.size].key;
   heap.size -=1;
+  heapify(heap, 1);
+
   if (flag == 1) {
     printHeap(heap);
   }
 
   return e;
 
-
-}
-
-void IncreaseKey(HEAP heap, int index, int value, int flag) {
-   /*which increases the key ﬁeld of the heap element pointed to by index to
-   value, which should not be smaller than the current value. Note that you
-   have to make necessary adjustment to make sure that heap order is maintained.
-   When ﬂag=1, the function prints out the heap content before the increase
-   key operation, and the heap content after the increase key operation.
-   When ﬂag=0, the function does not do any additional printing.*/
-
-    //TODO check index to make sure that it is <= size has to be >= 1
-
-    if (flag == 1) {
-      printHeap(heap);
-    }
-    heap.A[index].key = value;
-    //heapify();
-    if (flag == 1) {
-      printHeap(heap);
-    }
 
 }

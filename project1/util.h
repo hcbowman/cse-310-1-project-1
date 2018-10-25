@@ -7,7 +7,8 @@
 //void test(HEAP i);
 //void heapify();
 
-int nextCommand(int *i, int *v, int *f);
+int nextCommand(int *i, int *v, int *f, int *n, int *k);
+
 HEAP initialze(int n);
 void printHeap(HEAP heap);
 void BuildHeap(HEAP heap, ELEMENT* A, int n, int flag);
