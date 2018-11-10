@@ -8,6 +8,7 @@ typedef struct {
 
 } ELEMENT;
 
+
 typedef struct {
 
   int capacity;
